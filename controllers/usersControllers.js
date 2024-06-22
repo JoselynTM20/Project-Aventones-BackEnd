@@ -1,9 +1,9 @@
-const User = require("../models/usersModel");  //la importacion desde el archivo careerModel.js
+const User = require("../models/usersModel");  //la importacion desde el archivo UsersModel.js
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
 
-const UserPost = (req, res) => {  //se encargara de manejar las solicitudes HTTP POST para crear una nueva carrera.
+const UserPost = (req, res) => {  //se encargara de manejar las solicitudes HTTP POST para crear un nuevo usuario.
   
   let user = new User(); //se crea la estructura que va a la base de datos
   user.firstName = req.body.firstName;    
@@ -16,7 +16,7 @@ const UserPost = (req, res) => {  //se encargara de manejar las solicitudes HTTP
   user.city = req.body.city;
   user.phoneNumber = req.body.phoneNumber;
   user
-    .save()  //se usa este metodo para cargar, haciendo que si se guarda la carrera exitosamente se ejecuta el bloque de codigo creando en json
+    .save()  //se usa este metodo para cargar, haciendo que si se guarda un usuario exitosamente se ejecuta el bloque de codigo creando en json
     .then(() => {
         res.status(201); 
         res.header({
@@ -24,7 +24,7 @@ const UserPost = (req, res) => {  //se encargara de manejar las solicitudes HTTP
         });
         res.json(user);
     })
-    .catch((err) => {  //si hubo algun error al crear la carrera en la consola se imprime el mensaje de error y a la bd va un json con mensaje de error
+    .catch((err) => {  //si hubo algun error al un usuario en la consola se imprime el mensaje de error y a la bd va un json con mensaje de error
         res.status(422); //eror de solicitud
         console.log("error", err);
         res.json({
@@ -34,9 +34,9 @@ const UserPost = (req, res) => {  //se encargara de manejar las solicitudes HTTP
     };
 
 const UserGet = (req, res) => {
-  if (req.query && req.query.id) { //el objeto tiene una propiedad id y Si es así, significa que el cliente está solicitando una carrera específica por su ID.
-    User.findById(req.query.id) //buscar una carrera específica por su ID.
-      .then((user) => { //Si se encuentra la carrera, se devuelve en formato JSON como respuesta.
+  if (req.query && req.query.id) { //el objeto tiene una propiedad id y Si es así, significa que el cliente está solicitando un usuario específico por su ID.
+    User.findById(req.query.id) //buscar un usuario específico por su ID.
+      .then((user) => { //Si se encuentra el usuario, se devuelve en formato JSON como respuesta.
         res.json(user);
       })
       .catch((err) => { //caso contrario en consola muestra mensaje de error y a la bd manda un json con mensaje de error
