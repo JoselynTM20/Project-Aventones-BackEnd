@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'); 
 
-//estructura de bd for users-client
+//estructura de bd for users-drivers
 const userSchema = new mongoose.Schema({
     firstName: {type: String},
     Lastname: { type: String },
@@ -11,7 +11,12 @@ const userSchema = new mongoose.Schema({
     state: {type: String},
     city: {type: String},
     phoneNumber: { type: Number },
+    vehicleBrand: {type: String},
+    vehicleModel:{type: String},
+    vehicleYear:{type: Int},
+    vehiclePlate:{type: String},
+
 });
 
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('Driver', userSchema);
