@@ -44,7 +44,7 @@ const UserGet = (req, res) => {
         console.log("error", err);
         res.json({ error: "User does not exist" });
       });
-  } else { //en este else es para traer las carreras sin necesidad del ID sino que solo las lista todas en orden en el .then, en el .catch es en caso de dar error
+  } else { //en este else es para traer los usuarios sin necesidad del ID sino que solo las lista todas en orden en el .then, en el .catch es en caso de dar error
     User.find()
       .then((user) => {
         res.json(user);
@@ -53,6 +53,58 @@ const UserGet = (req, res) => {
         res.status(433);
         res.json({ error: err });
       });
+  }
+};
+
+const UserPut = async (req, res) => {
+  if (req.query && req.query.id) {
+    const UserId = req.query.id;
+
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            UserId, //ID del usuario que será actualizado
+            {
+                $set: {
+                    name: req.body.name,
+                    code: req.body.code,
+                    description: req.body.description
+                }
+            },
+            { new: true, runValidators: true } //devuelve el doc actualizado al lugar original y valida que los datos enviados sean correctos
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({ error: "Career doesn't exist" }); //esto pasa si el ID no corresponde a ningun usuario
+        }
+
+        return res.status(200).json(updatedUser); // si todo sale bien devuelve el usuario editada en un formato json
+    } catch (err) {
+        console.error('Error:', err);
+        return res.status(500).json({ error: 'error' });
+    }
+  }
+};
+
+async function userDelete(req, res) {
+  if (req.query && req.query.id) {
+    try {
+      // Primero, intenta encontrar el usuario para asegurarte de que existe
+      const user = await User.findById(req.query.id);
+      if (!user) {
+        // Si el usuario no existe, devuelve un error 
+        return res.status(404).json({ error: "User does not exist" });
+      }
+
+      // Si la carrera existe, procede a eliminarla
+      await User.deleteOne({ _id: req.query.id });
+      return res.status(204).json({});
+    } catch (err) {
+      console.error("Error while handling the career:", err);
+      return res.status(500).json({ error: "There was an error processing the user" });
+    }
+  } else {
+    // Si no se proporciona un ID da error
+    return res.status(400).json({ error: "No ID provided" });
   }
 };
 
