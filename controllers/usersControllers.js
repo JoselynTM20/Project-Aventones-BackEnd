@@ -74,7 +74,7 @@ const UserPut = async (req, res) => {
         );
 
         if (!updatedUser) {
-            return res.status(404).json({ error: "Career doesn't exist" }); //esto pasa si el ID no corresponde a ningun usuario
+            return res.status(404).json({ error: "User doesn't exist" }); //esto pasa si el ID no corresponde a ningun usuario
         }
 
         return res.status(200).json(updatedUser); // si todo sale bien devuelve el usuario editada en un formato json
@@ -85,7 +85,7 @@ const UserPut = async (req, res) => {
   }
 };
 
-async function userDelete(req, res) {
+async function UserDelete(req, res) {
   if (req.query && req.query.id) {
     try {
       // Primero, intenta encontrar el usuario para asegurarte de que existe
@@ -99,7 +99,7 @@ async function userDelete(req, res) {
       await User.deleteOne({ _id: req.query.id });
       return res.status(204).json({});
     } catch (err) {
-      console.error("Error while handling the career:", err);
+      console.error("Error while handling the user:", err);
       return res.status(500).json({ error: "There was an error processing the user" });
     }
   } else {
@@ -162,5 +162,6 @@ async function userDelete(req, res) {
     module.exports = {  //exporta las funciones
         UserPost,
         UserGet,
-       
+        UserPut,
+        UserDelete,
       };
