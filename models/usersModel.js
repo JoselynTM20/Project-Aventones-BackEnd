@@ -13,5 +13,11 @@ const userSchema = new mongoose.Schema({
     phoneNumber: { type: Number },
 });
 
-
 module.exports = mongoose.model('User', userSchema);
+
+
+//Metodo para actualizar de manera segura la contraseña desde el form.
+/*userSchema.methods.updatePassword = function(newPassword) {
+    // Lógica para actualizar la contraseña de manera segura
+    this.password = newPassword;
+    return this.save();*/
