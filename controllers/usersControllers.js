@@ -157,8 +157,6 @@ async function UserDelete(req, res) {
     });
 };*/
 
-
-
     module.exports = {  //exporta las funciones
         UserPost,
         UserGet,
