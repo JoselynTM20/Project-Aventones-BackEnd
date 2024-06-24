@@ -1,4 +1,5 @@
 const mongoose = require('mongoose'); 
+const bcrypt = require('bcryptjs');
 
 //estructura de bd for users-client
 const userSchema = new mongoose.Schema({
@@ -11,6 +12,13 @@ const userSchema = new mongoose.Schema({
     phoneNumber: { type: Number }
     
 });
+
+// Método para comparar contraseñas
+userSchema.methods.isValidPassword = async function(password) {
+    const user = this;
+    const compare = await bcrypt.compare(password, user.password);
+    return compare;
+};
 
 module.exports = mongoose.model('User', userSchema);
 
