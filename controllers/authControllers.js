@@ -20,7 +20,7 @@ const login = async (req, res) => {
                 if (!isValidPassword) {
                     return res.status(401).json({ error: 'Invalid password' });
                 }
-                return res.status(200).json({ userType: 'driver' });
+                return res.status(200).json({ userType: 'driver', userId: driver._id });
             }
         }
 
@@ -30,11 +30,12 @@ const login = async (req, res) => {
             return res.status(401).json({ error: 'Invalid password' });
         }
 
-        return res.status(200).json({ userType: 'user' });
+        return res.status(200).json({ userType: 'user', userId: user._id });
     } catch (error) {
         console.log('Error logging in:', error);
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 module.exports = { login };
