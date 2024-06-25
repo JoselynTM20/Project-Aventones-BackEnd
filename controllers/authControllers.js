@@ -20,6 +20,7 @@ const login = async (req, res) => {
                 if (!isValidPassword) {
                     return res.status(401).json({ error: 'Invalid password' });
                 }
+                
                 return res.status(200).json({ userType: 'driver', userId: driver._id });
             }
         }
@@ -37,5 +38,5 @@ const login = async (req, res) => {
     }
 };
 
-
 module.exports = { login };
+
