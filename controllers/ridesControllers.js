@@ -1,9 +1,9 @@
 // ridesControllers.js
 const RidesDriver = require('../models/RidesDriversModel.js');
 
-const RidesDriverPost= async (req, res) => {
+const RidesDriverPost = async (req, res) => {
     try {
-        const { departureFrom, arriveTo, days, time, seats, fee, vehicle } = req.body;
+        const { departureFrom, arriveTo, days, time, seats, fee, vehicle, userId } = req.body;
 
         const newRide = new RidesDriver({
             departureFrom,
@@ -12,11 +12,8 @@ const RidesDriverPost= async (req, res) => {
             time,
             seats,
             fee,
-            vehicle: {
-                make: vehicle.make,
-                model: vehicle.model,
-                year: vehicle.year
-            }
+            vehicle,
+            userId  // Guardar userId en el documento de ride
         });
 
         await newRide.save();
@@ -50,7 +47,7 @@ const RidesDriverGet = (req, res) => {
     }
 };
 
-const updateRideDriver = async (req, res) => {
+/*const updateRideDriver = async (req, res) => {
     try {
         const rideId = req.params.id;
         const updateData = req.body;
@@ -69,7 +66,7 @@ const updateRideDriver = async (req, res) => {
 };
 
 
-const deleteRide = (req, res) => {
+/*const deleteRide = (req, res) => {
     const rideId = req.params.id; // Obtén el ID del ride desde los parámetros de la solicitud
 
     Ride.findByIdAndDelete(rideId)
@@ -80,10 +77,10 @@ const deleteRide = (req, res) => {
             console.error('Error deleting ride:', err);
             res.status(500).json({ error: 'Failed to delete ride' });
         });
-};
+};*/
 
 
 
 
 
-module.exports = { RidesDriverPost, RidesDriverGet, updateRideDriver,  deleteRide };
+module.exports = { RidesDriverPost, RidesDriverGet };
