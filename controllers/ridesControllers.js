@@ -47,7 +47,7 @@ const RidesDriverGet = (req, res) => {
     }
 };
 
-/*const updateRideDriver = async (req, res) => {
+const updateRideDriver = async (req, res) => {
     try {
         const rideId = req.params.id;
         const updateData = req.body;
@@ -66,10 +66,10 @@ const RidesDriverGet = (req, res) => {
 };
 
 
-/*const deleteRide = (req, res) => {
+const deleteRide = (req, res) => {
     const rideId = req.params.id; // Obtén el ID del ride desde los parámetros de la solicitud
 
-    Ride.findByIdAndDelete(rideId)
+    RidesDriver.findByIdAndDelete(rideId)
         .then(() => {
             res.json({ message: 'Ride deleted successfully' });
         })
@@ -77,10 +77,8 @@ const RidesDriverGet = (req, res) => {
             console.error('Error deleting ride:', err);
             res.status(500).json({ error: 'Failed to delete ride' });
         });
-};*/
+};
 
 
 
-
-
-module.exports = { RidesDriverPost, RidesDriverGet };
+module.exports = { RidesDriverPost, RidesDriverGet, updateRideDriver, deleteRide };
