@@ -1,7 +1,7 @@
 // authControllers.js
 const bcrypt = require('bcryptjs');
-const User = require('../models/usersModel');
-const Driver = require('../models/driversModel');
+const User = require('../models/UsersModel');
+const Driver = require('../models/RriversModel');
 
 const login = async (req, res) => {
     try {

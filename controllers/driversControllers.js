@@ -1,5 +1,5 @@
 // driversControllers.js
-const Driver = require("../models/driversModel");
+const Driver = require("../models/RriversModel");
 const bcrypt = require('bcryptjs');
 
 const DriverPost = async (req, res) => {

@@ -1,4 +1,4 @@
-const User = require("../models/usersModel");  //la importacion desde el archivo UsersModel.js
+const User = require("../models/UsersModel");  //la importacion desde el archivo UsersModel.js
 const bcrypt = require('bcryptjs');
 
 
