@@ -1,5 +1,5 @@
 // ridesControllers.js
-const RidesDriver = require('../models/RidesDriversModel.js.js');
+const RidesDriver = require('../models/RidesDriversModel.js');
 
 const RidesDriverPost = async (req, res) => {
     try {
