@@ -61,23 +61,20 @@ const RidesDriverGet = (req, res) => {
 };
 
 
-const updateRideDriver = async (req, res) => {
+const updateRide = async (req, res) => {
+    const { id } = req.params; // Obtener el ID del ride desde los parámetros de la solicitud
     try {
-        const rideId = req.params.id;
-        const updateData = req.body;
-
-        const updatedRide = await RidesDriver.findByIdAndUpdate(rideId, updateData, { new: true });
-
+        const updatedRide = await Ride.findByIdAndUpdate(id, req.body, { new: true });
         if (!updatedRide) {
             return res.status(404).json({ error: 'Ride not found' });
         }
-
-        return res.status(200).json(updatedRide);
+        res.json(updatedRide); // Devolver el ride actualizado como respuesta
     } catch (error) {
-        console.log('Error updating ride:', error);
-        return res.status(500).json({ error: 'Internal server error' });
+        console.error('Error updating ride:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
+
 
 const deleteRide = async (req, res) => {
     try {
@@ -99,4 +96,4 @@ const deleteRide = async (req, res) => {
 
 
 
-module.exports = { RidesDriverPost, RidesDriverGet, updateRideDriver, deleteRide };
+module.exports = { RidesDriverPost, RidesDriverGet, updateRide, deleteRide };
