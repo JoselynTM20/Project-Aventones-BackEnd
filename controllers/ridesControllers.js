@@ -79,18 +79,22 @@ const updateRideDriver = async (req, res) => {
     }
 };
 
+const deleteRide = async (req, res) => {
+    try {
+        const rideId = req.params.id; // Obtener el ID del ride de los parámetros de la ruta
 
-const deleteRide = (req, res) => {
-    const rideId = req.params.id; // Obtén el ID del ride desde los parámetros de la solicitud
+        // Buscar y eliminar el ride por su ID
+        const deletedRide = await RidesDriver.findByIdAndDelete(rideId);
 
-    RidesDriver.findByIdAndDelete(rideId)
-        .then(() => {
-            res.json({ message: 'Ride deleted successfully' });
-        })
-        .catch((err) => {
-            console.error('Error deleting ride:', err);
-            res.status(500).json({ error: 'Failed to delete ride' });
-        });
+        if (!deletedRide) {
+            return res.status(404).json({ error: 'Ride not found' });
+        }
+
+        res.status(200).json({ message: 'Ride deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting ride:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 };
 
 
