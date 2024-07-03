@@ -25,27 +25,41 @@ const RidesDriverPost = async (req, res) => {
 };
 
 const RidesDriverGet = (req, res) => {
-    if (req.query && req.query.id) { // El objeto tiene una propiedad id
-        RidesDriver.findById(req.query.id) // Buscar un ride específico por su ID
-        .then((ridedriver) => { // Si se encuentra el ride, se devuelve en formato JSON como respuesta.
-          res.json(ridedriver);
-        })
-        .catch((err) => { // Si no se encuentra, se envía un error
-          res.status(404);
-          console.log("error", err);
-          res.json({ error: "Ride does not exist" });
-        });
-    } else { // Si no se proporciona un ID, se devuelven todos los rides
+    if (req.query && req.query.id) {
+        // Buscar un ride específico por su ID
+        RidesDriver.findById(req.query.id)
+            .then((ridedriver) => {
+                res.json(ridedriver); // Devuelve el ride encontrado en formato JSON
+            })
+            .catch((err) => {
+                res.status(404); // Establece el código de estado 404 (Not Found)
+                console.log("error", err);
+                res.json({ error: "Ride does not exist" }); // Devuelve un mensaje de error en formato JSON
+            });
+    } else if (req.query && req.query.userId) {
+        // Si se proporciona un userId, se devuelven los rides de ese conductor
+        RidesDriver.find({ userId: req.query.userId })
+            .then((ridedriver) => {
+                res.json(ridedriver); // Devuelve los rides encontrados en formato JSON
+            })
+            .catch((err) => {
+                res.status(433); // Establece un código de estado 433 (Custom error)
+                res.json({ error: err }); // Devuelve el error encontrado en formato JSON
+            });
+    } else {
+        // Si no se proporciona un ID o userId, se devuelven todos los rides
         RidesDriver.find()
-        .then((ridedriver) => {
-          res.json(ridedriver);
-        })
-        .catch((err) => {
-          res.status(433);
-          res.json({ error: err });
-        });
+            .then((ridedriver) => {
+                res.json(ridedriver); // Devuelve todos los rides encontrados en formato JSON
+            })
+            .catch((err) => {
+                res.status(433); // Establece un código de estado 433 (Custom error)
+                res.json({ error: err }); // Devuelve el error encontrado en formato JSON
+            });
     }
+    
 };
+
 
 const updateRideDriver = async (req, res) => {
     try {
