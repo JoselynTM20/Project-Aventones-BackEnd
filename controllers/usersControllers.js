@@ -2,34 +2,38 @@ const User = require("../models/UsersModel");  //la importacion desde el archivo
 const bcrypt = require('bcryptjs');
 
 
-const UserPost = async (req, res) => {  //se encargara de manejar las solicitudes HTTP POST para crear un nuevo usuario
-  try {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10); // Encriptar la contraseña
+const UserPost = async (req, res) => {
+    try {
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
-      let user = new User(); //se crea la estructura que va a la base de datos
-      user.firstName = req.body.firstName;    
-      user.Lastname = req.body.Lastname;
-      user.cardIdNumber = req.body.cardIdNumber;
-      user.BirthDate = req.body.BirthDate;
-      user.email = req.body.email;
-      user.password = hashedPassword; // Asignar la contraseña encriptada
-      user.phoneNumber = req.body.phoneNumber;
-      
-      await user.save();  // Guardar el usuario en la base de datos
+        // Verifica si ya existe un usuario con el mismo correo electrónico
+        const existingUser = await User.findOne({ email: req.body.email });
+        if (existingUser) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
 
-      res.status(201);
-      res.header({
-          location: `/api/user/?id=${user.id}`,
-      });
-      res.json(user);
-  } catch (err) {
-      res.status(422); // Error de solicitud
-      console.log("error", err);
-      res.json({
-          error: "error",
-      });
-  }
+        let user = new User();
+        user.firstName = req.body.firstName;
+        user.Lastname = req.body.Lastname;
+        user.cardIdNumber = req.body.cardIdNumber;
+        user.BirthDate = req.body.BirthDate;
+        user.email = req.body.email;
+        user.password = hashedPassword;
+        user.phoneNumber = req.body.phoneNumber;
+
+        await user.save();
+
+        res.status(201).json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Server error' });
+    }
 };
+
+
+
+
+
 
 const UserGet = (req, res) => {
   if (req.query && req.query.id) { //el objeto tiene una propiedad id y Si es así, significa que el cliente está solicitando un usuario específico por su ID.

@@ -62,19 +62,36 @@ const RidesDriverGet = (req, res) => {
 
 
 const updateRide = async (req, res) => {
-    const { id } = req.params; // Obtener el ID del ride desde los parámetros de la solicitud
+    const rideId = req.params.id; // Aquí asumimos que el ID viene como parte de la URL
+  
     try {
-        const updatedRide = await Ride.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedRide) {
-            return res.status(404).json({ error: 'Ride not found' });
-        }
-        res.json(updatedRide); // Devolver el ride actualizado como respuesta
+      const updatedRide = await Ride.findByIdAndUpdate(
+        rideId,
+        {
+          $set: {
+            departureFrom: req.body.departureFrom,
+            arriveTo: req.body.arriveTo,
+            time: req.body.time,
+            seats: req.body.seats,
+            fee: req.body.fee,
+            'vehicle.make': req.body.make,
+            'vehicle.model': req.body.model,
+            'vehicle.year': req.body.year
+          }
+        },
+        { new: true, runValidators: true }
+      );
+  
+      if (!updatedRide) {
+        return res.status(404).json({ error: "Ride not found" });
+      }
+  
+      res.status(200).json(updatedRide);
     } catch (error) {
-        console.error('Error updating ride:', error);
-        res.status(500).json({ error: 'Internal server error' });
+      console.error('Error updating ride:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
-};
-
+  };
 
 const deleteRide = async (req, res) => {
     try {

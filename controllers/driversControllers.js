@@ -9,6 +9,12 @@ const DriverPost = async (req, res) => {
         // Encriptar la contraseña antes de guardarla
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Verificar si ya existe un conductor con el mismo correo electrónico
+        const existingDriver = await Driver.findOne({ email: email });
+        if (existingDriver) {
+            return res.status(400).json({ error: 'Email already exists' });
+        }
+
         const newDriver = new Driver({
             firstName,
             Lastname,
@@ -24,12 +30,12 @@ const DriverPost = async (req, res) => {
         });
 
         await newDriver.save();
-        res.status(201).send(newDriver);
+        res.status(201).json(newDriver);
     } catch (error) {
-        res.status(400).send(error);
+        console.error(error);
+        res.status(500).json({ error: 'Server error' });
     }
 };
-
 const DriverGet = (req, res) => {
     if (req.query && req.query.id) {
         Driver.findById(req.query.id)
