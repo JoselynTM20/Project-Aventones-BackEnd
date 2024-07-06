@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 
 const UserPost = async (req, res) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);//Encripta la contraseña
 
         // Verifica si ya existe un usuario con el mismo correo electrónico
         const existingUser = await User.findOne({ email: req.body.email });
@@ -29,11 +29,6 @@ const UserPost = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
-
-
-
-
-
 
 const UserGet = (req, res) => {
   if (req.query && req.query.id) { //el objeto tiene una propiedad id y Si es así, significa que el cliente está solicitando un usuario específico por su ID.
