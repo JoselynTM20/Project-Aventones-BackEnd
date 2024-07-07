@@ -28,6 +28,7 @@ const RidesDriverGet = (req, res) => {
     if (req.query && req.query.id) {
         // Buscar un ride específico por su ID
         RidesDriver.findById(req.query.id)
+            .populate('userId', 'name') // Hacer populate para incluir el nombre del driver
             .then((ridedriver) => {
                 res.json(ridedriver); // Devuelve el ride encontrado en formato JSON
             })
@@ -39,6 +40,7 @@ const RidesDriverGet = (req, res) => {
     } else if (req.query && req.query.userId) {
         // Si se proporciona un userId, se devuelven los rides de ese conductor
         RidesDriver.find({ userId: req.query.userId })
+            .populate('userId', 'name') // Hacer populate para incluir el nombre del driver
             .then((ridedriver) => {
                 res.json(ridedriver); // Devuelve los rides encontrados en formato JSON
             })
@@ -49,6 +51,7 @@ const RidesDriverGet = (req, res) => {
     } else {
         // Si no se proporciona un ID o userId, se devuelven todos los rides
         RidesDriver.find()
+            .populate('userId', 'name') // Hacer populate para incluir el nombre del driver
             .then((ridedriver) => {
                 res.json(ridedriver); // Devuelve todos los rides encontrados en formato JSON
             })
@@ -57,9 +60,7 @@ const RidesDriverGet = (req, res) => {
                 res.json({ error: err }); // Devuelve el error encontrado en formato JSON
             });
     }
-    
 };
-
 
 const updateRide = async (req, res) => {
     const rideId = req.params.id; // Aquí asumimos que el ID viene como parte de la URL
