@@ -12,7 +12,7 @@ const RidesDriversSchema = new mongoose.Schema({
         model: { type: String, required: true },
         year: { type: Number, required: true }
     },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true } // Añadir userId como referencia
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver', required: true } // Añadir userId como referencia
 });
 
 module.exports = mongoose.model('Rides', RidesDriversSchema);

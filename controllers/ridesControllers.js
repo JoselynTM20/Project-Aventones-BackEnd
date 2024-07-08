@@ -28,7 +28,7 @@ const RidesDriverGet = (req, res) => {
     if (req.query && req.query.id) {
         // Buscar un ride específico por su ID
         RidesDriver.findById(req.query.id)
-            .populate('userId', 'name') // Hacer populate para incluir el nombre del driver
+        .populate('userId', 'firstName lastName') // Hacer populate para incluir el nombre del driver
             .then((ridedriver) => {
                 res.json(ridedriver); // Devuelve el ride encontrado en formato JSON
             })
