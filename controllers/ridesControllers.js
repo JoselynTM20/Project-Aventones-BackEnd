@@ -62,37 +62,30 @@ const RidesDriverGet = (req, res) => {
     }
 };
 
-const updateRide = async (req, res) => {
-    const rideId = req.params.id; // Aquí asumimos que el ID viene como parte de la URL
-  
+const updateRideDriver = async (req, res) => {
+    const { rideId } = req.params;
+    const updates = req.body;
+
     try {
-      const updatedRide = await Ride.findByIdAndUpdate(
-        rideId,
-        {
-          $set: {
-            departureFrom: req.body.departureFrom,
-            arriveTo: req.body.arriveTo,
-            time: req.body.time,
-            seats: req.body.seats,
-            fee: req.body.fee,
-            'vehicle.make': req.body.make,
-            'vehicle.model': req.body.model,
-            'vehicle.year': req.body.year
-          }
-        },
-        { new: true, runValidators: true }
-      );
-  
-      if (!updatedRide) {
-        return res.status(404).json({ error: "Ride not found" });
-      }
-  
-      res.status(200).json(updatedRide);
+        const ride = await Ride.findById(rideId);
+        if (!ride) {
+            return res.status(404).json({ error: 'Ride not found' });
+        }
+
+        // Verificar que el usuario autenticado sea el propietario del ride
+        if (ride.userId.toString() !== req.user.id) {
+            return res.status(403).json({ error: 'Forbidden' });
+        }
+
+        Object.assign(ride, updates);
+        await ride.save();
+
+        res.status(200).json(ride);
     } catch (error) {
-      console.error('Error updating ride:', error);
-      res.status(500).json({ error: 'Internal server error' });
+        console.error('Error updating ride:', error);
+        res.status(500).json({ error: 'Server error' });
     }
-  };
+};
 
 const deleteRide = async (req, res) => {
     try {
@@ -113,5 +106,24 @@ const deleteRide = async (req, res) => {
 };
 
 
+const getRidesByDriver = async (req, res) => {
+    try {
+        const { userId } = req.query;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+        
+        const rides = await Ride.find({ userId });
+        res.status(200).json(rides);
+    } catch (error) {
+        console.error('Error fetching rides:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+};
 
-module.exports = { RidesDriverPost, RidesDriverGet, updateRide, deleteRide };
+
+
+
+
+
+module.exports = { RidesDriverPost, RidesDriverGet, updateRideDriver, deleteRide, getRidesByDriver, getRideDetails };
