@@ -53,6 +53,7 @@ const BookingGet = (req, res) => {
     } else {
         // Si no se proporciona un ID, userId o rideId, se devuelven todas las reservas
         Booking.find()
+            .populate('UserId', 'firtsname') // Esto incluirá el nombre del driver en los resultados
             .then((booking) => {
                 res.json(booking); // Devuelve todas las reservas encontradas en formato JSON
             })
