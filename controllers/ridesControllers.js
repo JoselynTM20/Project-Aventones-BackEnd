@@ -62,30 +62,69 @@ const RidesDriverGet = (req, res) => {
     }
 };
 
+const RidesDriverGetById = (req, res) => {
+    const rideId = req.params.id; // Obtén el ID del ride desde los parámetros de la URL
+
+    if (rideId) {
+        // Buscar un ride específico por su ID
+        RidesDriver.findById(rideId)
+            .populate('userId', 'firstName lastName') // Hacer populate para incluir el nombre del driver
+            .then((ridedriver) => {
+                if (!ridedriver) {
+                    return res.status(404).json({ error: "Ride does not exist" }); // Devuelve un mensaje de error si el ride no existe
+                }
+                res.json(ridedriver); // Devuelve el ride encontrado en formato JSON
+            })
+            .catch((err) => {
+                console.error('Error fetching ride:', err);
+                res.status(500).json({ error: "Internal server error" }); // Devuelve un mensaje de error en caso de fallo
+            });
+    } else {
+        res.status(400).json({ error: "Missing ride ID" }); // Devuelve un mensaje de error si falta el ID del ride en la solicitud
+    }
+};
+
+
 const updateRideDriver = async (req, res) => {
     const { rideId } = req.params;
     const updates = req.body;
 
+    console.log('Request params:', req.params);
+    console.log('Request body:', req.body);
+
     try {
-        const ride = await Ride.findById(rideId);
+        const ride = await RidesDriver.findById(rideId);
         if (!ride) {
+            console.log('Ride not found');
             return res.status(404).json({ error: 'Ride not found' });
         }
 
         // Verificar que el usuario autenticado sea el propietario del ride
         if (ride.userId.toString() !== req.user.id) {
+            console.log('Forbidden: User does not own the ride');
             return res.status(403).json({ error: 'Forbidden' });
         }
 
-        Object.assign(ride, updates);
-        await ride.save();
+        // Actualizar solo los campos permitidos
+        const allowedUpdates = ['departureFrom', 'arriveTo', 'days', 'time', 'seats', 'fee', 'vehicle'];
+        allowedUpdates.forEach((key) => {
+            if (updates[key] !== undefined) {
+                ride[key] = updates[key];
+            }
+        });
 
+        console.log('Updated ride before saving:', ride);
+
+        await ride.save();
         res.status(200).json(ride);
     } catch (error) {
         console.error('Error updating ride:', error);
-        res.status(500).json({ error: 'Server error' });
+        res.status(500).json({ error: 'Server error', details: error.message });
     }
 };
+
+
+
 
 const deleteRide = async (req, res) => {
     try {
@@ -126,4 +165,4 @@ const getRidesByDriver = async (req, res) => {
 
 
 
-module.exports = { RidesDriverPost, RidesDriverGet, updateRideDriver, deleteRide, getRidesByDriver, getRideDetails };
+module.exports = { RidesDriverPost, RidesDriverGet, updateRideDriver, deleteRide, getRidesByDriver, RidesDriverGetById };
