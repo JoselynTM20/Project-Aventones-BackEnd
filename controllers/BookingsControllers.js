@@ -17,52 +17,50 @@ const BookingPost = async (req, res) => {
         return res.status(500).json({ error: 'Internal server error' });
     }
 };
-
 const BookingGet = (req, res) => {
     if (req.query && req.query.id) {
-        // Buscar una reserva específica por su ID
         Booking.findById(req.query.id)
             .then((booking) => {
-                res.json(booking); // Devuelve la reserva encontrada en formato JSON
+                if (!booking) {
+                    return res.status(404).json({ error: 'Booking not found' });
+                }
+                res.json(booking);
             })
             .catch((err) => {
-                res.status(404); // Establece el código de estado 404 (Not Found)
-                console.log("error", err);
-                res.json({ error: "Booking does not exist" }); // Devuelve un mensaje de error en formato JSON
+                console.error('Error finding booking:', err);
+                res.status(500).json({ error: 'Internal server error' });
             });
     } else if (req.query && req.query.userId) {
-        // Si se proporciona un userId, se devuelven las reservas de ese usuario
         Booking.find({ userId: req.query.userId })
-            .then((booking) => {
-                res.json(booking); // Devuelve las reservas encontradas en formato JSON
+            .then((bookings) => {
+                res.json(bookings);
             })
             .catch((err) => {
-                res.status(433); // Establece un código de estado 433 (Custom error)
-                res.json({ error: err }); // Devuelve el error encontrado en formato JSON
+                console.error('Error finding bookings:', err);
+                res.status(500).json({ error: 'Internal server error' });
             });
     } else if (req.query && req.query.rideId) {
-        // Si se proporciona un rideId, se devuelven las reservas de ese ride
         Booking.find({ rideId: req.query.rideId })
-            .then((booking) => {
-                res.json(booking); // Devuelve las reservas encontradas en formato JSON
+            .then((bookings) => {
+                res.json(bookings);
             })
             .catch((err) => {
-                res.status(433); // Establece un código de estado 433 (Custom error)
-                res.json({ error: err }); // Devuelve el error encontrado en formato JSON
+                console.error('Error finding bookings:', err);
+                res.status(500).json({ error: 'Internal server error' });
             });
     } else {
-        // Si no se proporciona un ID, userId o rideId, se devuelven todas las reservas
         Booking.find()
-            .populate('UserId', 'firtsname') // Esto incluirá el nombre del driver en los resultados
-            .then((booking) => {
-                res.json(booking); // Devuelve todas las reservas encontradas en formato JSON
+            .populate('userId', 'firstName') // Asegúrate de que 'userId' coincida con el nombre correcto en tu modelo
+            .then((bookings) => {
+                res.json(bookings);
             })
             .catch((err) => {
-                res.status(433); // Establece un código de estado 433 (Custom error)
-                res.json({ error: err }); // Devuelve el error encontrado en formato JSON
+                console.error('Error finding bookings:', err);
+                res.status(500).json({ error: 'Internal server error' });
             });
     }
 };
+
 
 const UpdateBooking = async (req, res) => {
     const bookingId = req.params.id; // Aquí asumimos que el ID viene como parte de la URL
